@@ -28,7 +28,6 @@ public class GoogleTranslaterMainPageTest {
     @BeforeClass
     public void setup() {
         driver = new ChromeDriver();
-        driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
     }
