@@ -44,6 +44,8 @@ public class SeleniumPagesTest {
 
         //check correct url
         assertThat(driver.getCurrentUrl(), is("http://www.seleniumhq.org/projects/"));
+        assertThat(driver.getTitle(), is("Selenium Projects"));
+
 
     }
     @Test
@@ -51,9 +53,10 @@ public class SeleniumPagesTest {
         driver.get(seleniumPageUrl);
         WebElement downloadTab = driver.findElement(By.id("menu_download"));
         downloadTab.click();
-
+        WebElement downloadList = driver.findElement(By.id("nav"));
         //check correct Title
         assertThat(driver.getTitle(), is("Downloads"));
+        assertThat(downloadList.isDisplayed(), is(true));
     }
 
     @Test
@@ -68,6 +71,8 @@ public class SeleniumPagesTest {
         String cssBackgroundAfterTest= docTabAfterSelection.getCssValue("background");
 
         //check was Documentation tab selected or not
+
+        assertThat(driver.getCurrentUrl(), is("http://www.seleniumhq.org/docs/"));
         assertThat(cssBackgroundBeforeTest, is(not(cssBackgroundAfterTest)));
     }
 
@@ -79,16 +84,18 @@ public class SeleniumPagesTest {
 
         //check correct url length
         assertThat(driver.getTitle().length(), is(12));
+        assertThat(driver.getTitle(), is("Getting Help"));
     }
 
     @Test
     public void selectionAboutTabTest() {
         driver.get(seleniumPageUrl);
-        WebElement aboutTab = driver.findElement(By.cssSelector("#header li:nth-of-type(1)"));
+        WebElement aboutTab = driver.findElement(By.linkText("About"));
         aboutTab.click();
-
+        WebElement aboutList = driver.findElement(By.cssSelector("#nav>li>a"));
         //check correct url endwith
         assertThat(driver.getCurrentUrl().endsWith("about/"), is(true));
+        assertThat(aboutList.isDisplayed(), is(true));
     }
 
     //-------------------Navigations command()-------------
@@ -98,7 +105,7 @@ public class SeleniumPagesTest {
         driver.get(seleniumPageUrl);
         WebElement projectsTab = driver.findElement(By.cssSelector("#menu_projects>a"));
         projectsTab.click();
-        WebElement aboutTab = driver.findElement(By.cssSelector("#header li:nth-of-type(1)"));
+        WebElement aboutTab = driver.findElement(By.linkText("About"));
         aboutTab.click();
         driver.navigate().back();
 
@@ -111,7 +118,7 @@ public class SeleniumPagesTest {
         driver.get(seleniumPageUrl);
         WebElement projectsTab = driver.findElement(By.cssSelector("#menu_projects>a"));
         projectsTab.click();
-        WebElement aboutTab = driver.findElement(By.cssSelector("#header li:nth-of-type(1)"));
+        WebElement aboutTab = driver.findElement(By.linkText("About"));
         aboutTab.click();
         driver.navigate().back();
         driver.navigate().forward();
