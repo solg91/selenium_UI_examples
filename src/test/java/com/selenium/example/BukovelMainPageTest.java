@@ -18,7 +18,7 @@ import static org.hamcrest.core.Is.is;
  * Created by solg on 30.12.2016.
  */
 public class BukovelMainPageTest {
-    private WebDriver driver;
+    private static WebDriver driver;
     String bukovelMainPageUrl = "http://bukovel.com/";
 
     @BeforeClass
@@ -32,18 +32,35 @@ public class BukovelMainPageTest {
     public void tearDown() {
         driver.quit();
     }
+
     @Test
     public void bukovelPlanListTest() {
 
         driver.get(bukovelMainPageUrl);
-        WebElement planTab = driver.findElement(By.cssSelector("[data-content=plan]"));
-        planTab.click();
+        BukoveMainPageObject.planTab(driver).click();
 
-        List<WebElement> allOptions = driver.findElements(By.cssSelector("div#planTab div.info-tab-left-menu a"));
+        List<WebElement> allOptions = BukoveMainPageObject.list(driver);
         for (WebElement option : allOptions) {
             System.out.println(String.format("Значение: %s", option.getAttribute("href")));
         }
         //check second link
         assertThat(allOptions.get(1).getAttribute("href"), is("http://bukovel.com/ski/skipass"));
     }
+
+    @Test
+    public void bukovelPlanListOnEnglishTest() {
+
+        driver.get(bukovelMainPageUrl);
+        BukoveMainPageObject.language(driver).click();
+        BukoveMainPageObject.languageEn(driver).click();
+        BukoveMainPageObject.openBukovel(driver).click();
+
+        WebElement element = driver.findElement(By.xpath("//a[@class=\"links-transition open-menu-link open-menu-link-style2 active\"]"));
+        assertThat(element.getAttribute("title"), is("Explore Bukovel"));
+
+
+
+    }
+
+
 }
