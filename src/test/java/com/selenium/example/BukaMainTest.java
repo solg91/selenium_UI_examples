@@ -1,6 +1,5 @@
 package com.selenium.example;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,9 +16,11 @@ import static org.hamcrest.core.Is.is;
 /**
  * Created by solg on 30.12.2016.
  */
-public class BukovelMainPageTest {
+public class BukaMainTest {
+
     private static WebDriver driver;
     String bukovelMainPageUrl = "http://bukovel.com/";
+    PageObjectBukaMain bukaMain = new PageObjectBukaMain();
 
     @BeforeClass
     public void setup() {
@@ -34,12 +35,12 @@ public class BukovelMainPageTest {
     }
 
     @Test
-    public void bukovelPlanListTest() {
+    public void OpenPlanListTest() {
 
         driver.get(bukovelMainPageUrl);
-        BukoveMainPageObject.planTab(driver).click();
+        bukaMain.clickToElement(driver, bukaMain.planButton);
 
-        List<WebElement> allOptions = BukoveMainPageObject.list(driver);
+        List<WebElement> allOptions = bukaMain.getListOfElements(driver, bukaMain.planDropDownList);
         for (WebElement option : allOptions) {
             System.out.println(String.format("Значение: %s", option.getAttribute("href")));
         }
@@ -48,17 +49,14 @@ public class BukovelMainPageTest {
     }
 
     @Test
-    public void bukovelPlanListOnEnglishTest() {
+    public void DisplayOpenBukovelOnEnglishTest() {
 
         driver.get(bukovelMainPageUrl);
-        BukoveMainPageObject.language(driver).click();
-        BukoveMainPageObject.languageEn(driver).click();
-        BukoveMainPageObject.openBukovel(driver).click();
-
-        WebElement element = driver.findElement(By.xpath("//a[@class=\"links-transition open-menu-link open-menu-link-style2 active\"]"));
-        assertThat(element.getAttribute("title"), is("Explore Bukovel"));
-
-
+        bukaMain.clickToElement(driver, bukaMain.languageButton);
+        bukaMain.clickToElement(driver, bukaMain.languageEnButton);
+        bukaMain.clickToElement(driver, bukaMain.openBukovelButton);
+        //check Button title
+        assertThat(bukaMain.getElementAttribute(driver, bukaMain.openBukovelDropDownList,"title"), is("Explore Bukovel"));
 
     }
 

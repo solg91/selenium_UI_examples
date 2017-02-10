@@ -4,7 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -22,7 +21,11 @@ import static org.testng.AssertJUnit.assertEquals;
 public class SeleniumPagesTest {
     private WebDriver driver;
     String seleniumPageUrl = "http://www.seleniumhq.org";
-
+    PageObjectSeleniumMain selMain = new PageObjectSeleniumMain();
+    PageObjectSeleniumDownload selDownload = new PageObjectSeleniumDownload();
+    PageObjectSeleniumDocument selDocument = new PageObjectSeleniumDocument();
+    PageObjectSeleniumSupport selSupport = new PageObjectSeleniumSupport();
+    PageObjectSeleniumAbout selAbout = new PageObjectSeleniumAbout();
 
     @BeforeClass
     public void setup() {
@@ -37,11 +40,10 @@ public class SeleniumPagesTest {
     }
 
     @Test
-    public void selectionProjectsTabTest() {
+    public void selectProjectsTabTest() {
         driver.get(seleniumPageUrl);
-        WebElement projectsTab = driver.findElement(By.cssSelector("#menu_projects>a"));
-        projectsTab.click();
 
+        selMain.clickToElement(driver, selMain.projectsTab);
         //check correct url
         assertThat(driver.getCurrentUrl(), is("http://www.seleniumhq.org/projects/"));
         assertThat(driver.getTitle(), is("Selenium Projects"));
@@ -49,38 +51,34 @@ public class SeleniumPagesTest {
 
     }
     @Test
-    public void selectionDownloadTabTest() {
+    public void selectDownloadTabTest() {
         driver.get(seleniumPageUrl);
-        WebElement downloadTab = driver.findElement(By.id("menu_download"));
-        downloadTab.click();
-        WebElement downloadList = driver.findElement(By.id("nav"));
+        selMain.clickToElement(driver, selMain.downloadTab);
+
         //check correct Title
         assertThat(driver.getTitle(), is("Downloads"));
-        assertThat(downloadList.isDisplayed(), is(true));
+        //check left list presence
+        assertThat(selDownload.getWebElement(driver, selDownload.downloadLeftList).isDisplayed(), is(true));
     }
 
     @Test
-    public void selectionDocumentationTabTest() {
+    public void selectDocumentationTabTest() {
         driver.get(seleniumPageUrl);
-        WebElement docTab = driver.findElement(By.cssSelector("[title=\"Technical references and guides\"]"));
-        String cssBackgroundBeforeTest = docTab.getCssValue("background");
 
-        docTab.click();
-
-        WebElement docTabAfterSelection = driver.findElement(By.cssSelector("[title=\"Technical references and guides\"]"));
-        String cssBackgroundAfterTest= docTabAfterSelection.getCssValue("background");
+        String cssBackgroundBeforeClick = selMain.getElementCssValue(driver, selMain.documentTab,"background");
+        selMain.clickToElement(driver, selMain.documentTab);
+        String cssBackgroundAfterClick= selDocument.getElementCssValue(driver, selDocument.documentTab,"background");
 
         //check was Documentation tab selected or not
 
         assertThat(driver.getCurrentUrl(), is("http://www.seleniumhq.org/docs/"));
-        assertThat(cssBackgroundBeforeTest, is(not(cssBackgroundAfterTest)));
+        assertThat(cssBackgroundBeforeClick, is(not(cssBackgroundAfterClick)));
     }
 
     @Test
-    public void selectionSupportTabTest() {
+    public void selectSupportTabTest() {
         driver.get(seleniumPageUrl);
-        WebElement supportTab = driver.findElement(By.linkText("Support"));
-        supportTab.click();
+        selMain.clickToElement(driver, selMain.supportTab);
 
         //check correct url length
         assertThat(driver.getTitle().length(), is(12));
@@ -88,25 +86,22 @@ public class SeleniumPagesTest {
     }
 
     @Test
-    public void selectionAboutTabTest() {
+    public void selectAboutTabTest() {
         driver.get(seleniumPageUrl);
-        WebElement aboutTab = driver.findElement(By.linkText("About"));
-        aboutTab.click();
-        WebElement aboutList = driver.findElement(By.cssSelector("#nav>li>a"));
+        selMain.clickToElement(driver, selMain.aboutTab);
+
         //check correct url endwith
         assertThat(driver.getCurrentUrl().endsWith("about/"), is(true));
-        assertThat(aboutList.isDisplayed(), is(true));
+        assertThat(selAbout.getWebElement(driver, selAbout.aboutSeleList).isDisplayed(), is(true));
     }
 
     //-------------------Navigations command()-------------
 
     @Test
-    public void backButtonForTabTest() {
+    public void browserBackButtonTest() {
         driver.get(seleniumPageUrl);
-        WebElement projectsTab = driver.findElement(By.cssSelector("#menu_projects>a"));
-        projectsTab.click();
-        WebElement aboutTab = driver.findElement(By.linkText("About"));
-        aboutTab.click();
+        selMain.clickToElement(driver, selMain.projectsTab);
+        selMain.clickToElement(driver, selMain.aboutTab);
         driver.navigate().back();
 
         //check correct url endwith
@@ -114,12 +109,10 @@ public class SeleniumPagesTest {
     }
 
     @Test
-    public void forwardButtonForTabTest() {
+    public void BrowserForwardButtonTest() {
         driver.get(seleniumPageUrl);
-        WebElement projectsTab = driver.findElement(By.cssSelector("#menu_projects>a"));
-        projectsTab.click();
-        WebElement aboutTab = driver.findElement(By.linkText("About"));
-        aboutTab.click();
+        selMain.clickToElement(driver, selMain.projectsTab);
+        selMain.clickToElement(driver, selMain.aboutTab);
         driver.navigate().back();
         driver.navigate().forward();
         //check correct url endwith
